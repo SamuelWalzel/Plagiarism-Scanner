@@ -7,7 +7,7 @@ This project is a **Plagiarism Scanner** for any text-based file. It allows user
 ### Features
 - Calculates the percentage similarity between two Python files.
 - Displays results in a simple GUI.
-- Supports files in any text-based format, though it is optimized for `.py` files.
+- Supports files in any text-based format.
 
 ## Table of Contents
 
