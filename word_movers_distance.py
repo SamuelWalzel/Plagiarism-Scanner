@@ -1,0 +1,23 @@
+import text_processing as tp
+import spacy
+
+'''
+This function calculates the similarity between two texts using the word movers distance.
+It uses the spacy library to load the pre-trained word vectors and calculate the similarity.
+The similarity is returned as a percentage.
+
+Arguments:
+    text_1 (str): The first text to compare.
+    text_2 (str): The second text to compare.
+    
+Returns:
+    int: The similarity between the two texts as a percentage.
+'''
+
+
+def check_similarity(text_1: str, text_2: str):
+    print('word_movers_distance: importing vector model...')
+    nlp = spacy.load("en_core_web_md")
+    doc1 = nlp(text_1)
+    doc2 = nlp(text_2)
+    return int(doc1.similarity(doc2)*100)

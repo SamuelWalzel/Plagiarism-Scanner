@@ -9,37 +9,41 @@ import tkinter as tk
 from tkinter import filedialog
 import difflib as dl
 import text_processing as tp
+import word_movers_distance as wmd
  
 class Frame:
     """
     A GUI frame class for processing and displaying information about a text file.
 
     Class Variables:
-        - stored_texts (dict): 
+        stored_raw_texts (dict): 
+            A dictionary storing raw text for each frame instance.
+            Key: frame instance (int), Value: raw text (str).
+        stored_tokens (dict): 
             A dictionary storing processed text for each frame instance. 
             Key: frame instance (int), Value: processed text (list of tokens).
-        - token_count (dict): 
+        token_count (dict): 
             A dictionary storing the token count for the processed text of each frame instance. 
             Key: frame instance (int), Value: token count (int).
 
     Instance Variables:
-        - root: 
+        root: 
             The parent Tkinter root window.
-        - instance (int): 
+        instance (int): 
             Identifier for the frame instance.
-        - frame (tk.LabelFrame): 
+        frame (tk.LabelFrame): 
             A labeled frame widget for the GUI.
-        - filepath (str): 
+        filepath (str): 
             Path to the file selected by the user.
-        - path (tk.StringVar): 
+        path (tk.StringVar): 
             StringVar to display the file path in the frame.
-        - path_label (tk.Label): 
+        path_label (tk.Label): 
             Label widget for showing the file path.
-        - count (tk.StringVar): 
+        count (tk.StringVar): 
             StringVar to display the token count in the frame.
-        - count_label (tk.Label): 
+        count_label (tk.Label): 
             Label widget for showing the token count.
-        - button (tk.Button): 
+        button (tk.Button): 
             Button widget for file selection.
 
     Methods:
@@ -62,7 +66,8 @@ class Frame:
             Class method to process text, store the processed tokens, and update the token count.
     """
 
-    stored_texts = {}
+    stored_raw_texts = {}
+    stored_tokens = {}
     token_count = {}
 
     def __init__(self, root, frame_instance: int):
@@ -124,33 +129,34 @@ class Frame:
         Args:
             text (str): The text content to be processed.
         """
-        Frame.stored_texts[self.instance] = tp.process(text)
-        Frame.token_count[self.instance] = len(Frame.stored_texts[self.instance])
+        Frame.stored_raw_texts[self.instance] = text
+        Frame.stored_tokens[self.instance] = tp.process(text)
+        Frame.token_count[self.instance] = len(Frame.stored_tokens[self.instance])
         self.count.set(f'Tokens: {str(Frame.token_count[self.instance])}')
-        print(f'Result: {Frame.stored_texts[self.instance]}')
+        print(f'Result: {Frame.stored_tokens[self.instance]}')
     
 class GUI:
     """
     A graphical user interface (GUI) application for comparing two text files and calculating their similarity.
 
     Instance Variables:
-        - root (tk.Tk): 
+        root (tk.Tk): 
             The main Tkinter application window.
-        - heading1 (tuple): 
+        heading1 (tuple): 
             Font settings for primary headings.
-        - heading2 (tuple): 
+        heading2 (tuple): 
             Font settings for secondary headings.
-        - body (tuple): 
+        body (tuple): 
             Font settings for body text.
-        - frame_1 (Frame): 
+        frame_1 (Frame): 
             Custom frame for selecting and displaying information about the first file.
-        - frame_2 (Frame): 
+        frame_2 (Frame): 
             Custom frame for selecting and displaying information about the second file.
-        - result_frame (tk.LabelFrame): 
+        result_frame (tk.LabelFrame): 
             Frame for displaying the comparison results.
-        - button (tk.Button): 
+        button (tk.Button): 
             Button for triggering the file comparison.
-        - sim_print (tk.StringVar): 
+        sim_print (tk.StringVar): 
             A string variable for displaying the similarity percentage.
 
     Methods:
@@ -228,17 +234,28 @@ class GUI:
 
     def compare_files(self):
         """
-        Compares the processed text from the two frames using the SequenceMatcher from the difflib module. 
-        Calculates and displays the similarity percentage.
+        Compares the processed text from the two frames using the SequenceMatcher from the difflib module.
+        
+        This method calculates the similarity percentage between the texts stored in `frame_1` and `frame_2`, 
+        and displays the result in the `result_frame`.
 
         Raises:
-            KeyError: If one or both texts are missing in `Frame.stored_texts`.
+            KeyError: If one or both texts are missing in `Frame.stored_tokens`.
+
         """
         try:
-            text1 = Frame.stored_texts[1]
-            text2 = Frame.stored_texts[2]
-            sim = int(dl.SequenceMatcher(None, text1, text2).ratio() * 100)
-            self.sim_print.set(f'Similarity: {str(sim)} %')
+            text1 = Frame.stored_raw_texts[1]
+            text2 = Frame.stored_raw_texts[2]
+            tokens1 = Frame.stored_tokens[1]
+            tokens2 = Frame.stored_tokens[2]
+            word_likeness = round(dl.SequenceMatcher(None, tokens1, tokens2).ratio()*100, 2)
+            print(f'word likeness: {word_likeness} %')
+            token_closeness = wmd.check_similarity(' '.join(tokens1), ' '.join(tokens2))
+            print(f'token closeness: {token_closeness} %')
+            raw_text_closeness = wmd.check_similarity(text1, text2)
+            print(f'raw text closeness: {raw_text_closeness} %')
+            average_score = round((word_likeness + token_closeness + raw_text_closeness)/3, 2)
+            self.sim_print.set(f'Similarity: {str(average_score)} %')
         except KeyError:
             print('texts missing')
      
