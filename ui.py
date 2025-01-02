@@ -11,26 +11,89 @@ import difflib as dl
 import text_processing as tp
  
 class Frame:
-    
+    """
+    A GUI frame class for processing and displaying information about a text file.
+
+    Class Variables:
+        - stored_texts (dict): 
+            A dictionary storing processed text for each frame instance. 
+            Key: frame instance (int), Value: processed text (list of tokens).
+        - token_count (dict): 
+            A dictionary storing the token count for the processed text of each frame instance. 
+            Key: frame instance (int), Value: token count (int).
+
+    Instance Variables:
+        - root: 
+            The parent Tkinter root window.
+        - instance (int): 
+            Identifier for the frame instance.
+        - frame (tk.LabelFrame): 
+            A labeled frame widget for the GUI.
+        - filepath (str): 
+            Path to the file selected by the user.
+        - path (tk.StringVar): 
+            StringVar to display the file path in the frame.
+        - path_label (tk.Label): 
+            Label widget for showing the file path.
+        - count (tk.StringVar): 
+            StringVar to display the token count in the frame.
+        - count_label (tk.Label): 
+            Label widget for showing the token count.
+        - button (tk.Button): 
+            Button widget for file selection.
+
+    Methods:
+        __init__(self, root, frame_instance):
+            Initializes a Frame instance, sets up the GUI components, and initializes class variables.
+
+        buttons(self):
+            Creates and packs a button for selecting a file into the frame.
+
+        open_file(self):
+            Opens a file dialog for selecting a text file. Updates the file path display and processes the file's content.
+
+        show_path(self):
+            Creates and packs a label for displaying the file path.
+
+        show_token_count(self):
+            Creates and packs a label for displaying the token count.
+
+        update_dict(cls, self, text):
+            Class method to process text, store the processed tokens, and update the token count.
+    """
+
     stored_texts = {}
     token_count = {}
-    
+
     def __init__(self, root, frame_instance: int):
+        """
+        Initializes the Frame instance.
+
+        Args:
+            root: The parent Tkinter root window.
+            frame_instance (int): Identifier for the frame instance.
+        """
         self.root = root
         self.instance = frame_instance
         Frame.token_count[self.instance] = None
         border_label = f'File {str(self.instance)}'
-        self.frame = tk.LabelFrame(self.root, text= border_label, relief="groove", borderwidth=2)
+        self.frame = tk.LabelFrame(self.root, text=border_label, relief="groove", borderwidth=2)
         self.filepath = None
         self.buttons()
         self.show_path()
         self.show_token_count()
-        
+
     def buttons(self):
+        """
+        Creates a 'Choose file' button in the frame to allow the user to select a text file.
+        """
         self.button = tk.Button(self.frame, text='Choose file', command=self.open_file)
         self.button.pack(pady=5, padx=5)
-        
+
     def open_file(self):
+        """
+        Opens a file dialog for selecting a text file. Updates the file path display and processes the file content.
+        """
         self.filepath = filedialog.askopenfilename(filetypes=[("text files", "*.txt")])
         print(self.filepath)
         self.path.set(f'Filepath: {self.filepath}')
@@ -38,25 +101,82 @@ class Frame:
             Frame.update_dict(self, file.read())
 
     def show_path(self):
+        """
+        Creates a label to display the file path and adds it to the frame.
+        """
         self.path = tk.StringVar(value=f'Filepath: {self.filepath}')
         self.path_label = tk.Label(self.frame, textvariable=self.path, anchor='w')
         self.path_label.pack(pady=5, padx=5, fill='x')
-        
+
     def show_token_count(self):
-        self.count = tk.StringVar(value=f'Tokens: {str(Frame.token_count[self.instance]) }')
+        """
+        Creates a label to display the token count and adds it to the frame.
+        """
+        self.count = tk.StringVar(value=f'Tokens: {str(Frame.token_count[self.instance])}')
         self.count_label = tk.Label(self.frame, textvariable=self.count, anchor='w')
         self.count_label.pack(pady=5, padx=5, fill='x')
 
     @classmethod
     def update_dict(cls, self, text):
+        """
+        Processes the text, stores the tokens in the class variable, and updates the token count.
+
+        Args:
+            text (str): The text content to be processed.
+        """
         Frame.stored_texts[self.instance] = tp.process(text)
         Frame.token_count[self.instance] = len(Frame.stored_texts[self.instance])
         self.count.set(f'Tokens: {str(Frame.token_count[self.instance])}')
         print(f'Result: {Frame.stored_texts[self.instance]}')
     
 class GUI:
-    
+    """
+    A graphical user interface (GUI) application for comparing two text files and calculating their similarity.
+
+    Instance Variables:
+        - root (tk.Tk): 
+            The main Tkinter application window.
+        - heading1 (tuple): 
+            Font settings for primary headings.
+        - heading2 (tuple): 
+            Font settings for secondary headings.
+        - body (tuple): 
+            Font settings for body text.
+        - frame_1 (Frame): 
+            Custom frame for selecting and displaying information about the first file.
+        - frame_2 (Frame): 
+            Custom frame for selecting and displaying information about the second file.
+        - result_frame (tk.LabelFrame): 
+            Frame for displaying the comparison results.
+        - button (tk.Button): 
+            Button for triggering the file comparison.
+        - sim_print (tk.StringVar): 
+            A string variable for displaying the similarity percentage.
+
+    Methods:
+        __init__(self):
+            Initializes the GUI application, configures the main window, and sets up all components.
+
+        root_config(self):
+            Configures the root window, including size, title, and grid layout.
+
+        first_labels(self):
+            Creates and displays the main title label at the top of the GUI.
+
+        set_frames(self):
+            Creates and places two frames for file selection and processing.
+
+        comparison_frame(self):
+            Creates and places a frame for displaying comparison results, along with a button and label.
+
+        compare_files(self):
+            Compares the processed text from the two frames and calculates the similarity percentage.
+    """
+
     def __init__(self):
+        """
+        Initializes the GUI class instance, setting up the root window, frames, and labels.
+        """
         self.root = tk.Tk()
         self.heading1 = ('Arial', 20)
         self.heading2 = ('Arial', 16)
@@ -67,6 +187,9 @@ class GUI:
         self.comparison_frame()
 
     def root_config(self):
+        """
+        Configures the root window by setting the title, size, and grid layout for uniform column widths.
+        """
         self.root.title('ROOT WINDOW')
         self.root.geometry('800x500')
         self.root.grid_columnconfigure(0, weight=1, uniform='equal')
@@ -74,18 +197,27 @@ class GUI:
         self.root.rowconfigure(0, weight=0)
         self.root.rowconfigure(1, weight=0)
         self.root.rowconfigure(2, weight=0)
-        
+
     def first_labels(self):
+        """
+        Creates and displays the main title label at the top of the GUI.
+        """
         self.label1 = tk.Label(self.root, text='Compare two files', font=self.body)
         self.label1.grid(columnspan=2, row=0, pady=10, padx=10)
-        
+
     def set_frames(self):
+        """
+        Creates two `Frame` instances for file selection and displays them in the main window.
+        """
         self.frame_1 = Frame(self.root, 1)
         self.frame_1.frame.grid(column=0, row=1, pady=10, padx=10, sticky='EW')
         self.frame_2 = Frame(self.root, 2)
         self.frame_2.frame.grid(column=1, row=1, pady=10, padx=10, sticky='EW')
-             
+
     def comparison_frame(self):
+        """
+        Creates a frame for displaying the comparison results and sets up the button and label within it.
+        """
         self.result_frame = tk.LabelFrame(self.root, text='Results', labelanchor='n', relief="groove", borderwidth=2)
         self.result_frame.grid(columnspan=2, row=2, pady=10, padx=10, sticky="ew")
         self.button = tk.Button(self.result_frame, text='Show results', command=self.compare_files)
@@ -93,12 +225,19 @@ class GUI:
         self.sim_print = tk.StringVar(value=f'Similarity: ...')
         lbl = tk.Label(self.result_frame, textvariable=self.sim_print)
         lbl.pack(pady=5, padx=5)
-        
+
     def compare_files(self):
+        """
+        Compares the processed text from the two frames using the SequenceMatcher from the difflib module. 
+        Calculates and displays the similarity percentage.
+
+        Raises:
+            KeyError: If one or both texts are missing in `Frame.stored_texts`.
+        """
         try:
             text1 = Frame.stored_texts[1]
             text2 = Frame.stored_texts[2]
-            sim = int(dl.SequenceMatcher(None, text1, text2).ratio()*100)
+            sim = int(dl.SequenceMatcher(None, text1, text2).ratio() * 100)
             self.sim_print.set(f'Similarity: {str(sim)} %')
         except KeyError:
             print('texts missing')
