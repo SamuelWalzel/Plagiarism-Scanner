@@ -20,7 +20,7 @@
 
 **Lowercase Transformation:** Convert the text to lowercase to ensure that case differences don't affect the comparison.
 
-## Text Similarity Measurement: To determine the similarity between two texts, various methods can be applied. Here are a few options:
+## Text Similarity Measurement:
 
 **Cosine Similarity:** Measures the cosine of the angle between two vectors in a multi-dimensional space (each word can be represented as a dimension). This is commonly used for comparing the frequency of words in the two texts.
     First, convert the text into a vector (usually through a TF-IDF (Term Frequency-Inverse Document Frequency) or Bag of Words (BoW) model).
