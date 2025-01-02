@@ -22,14 +22,14 @@
 
 ## Text Similarity Measurement:
 
-**Cosine Similarity:** Measures the cosine of the angle between two vectors in a multi-dimensional space (each word can be represented as a dimension). This is commonly used for comparing the frequency of words in the two texts.
+(SAMUEL) **Cosine Similarity:** Measures the cosine of the angle between two vectors in a multi-dimensional space (each word can be represented as a dimension). This is commonly used for comparing the frequency of words in the two texts.
     First, convert the text into a vector (usually through a TF-IDF (Term Frequency-Inverse Document Frequency) or Bag of Words (BoW) model).
     Then, calculate the cosine similarity between the two vectors.
     
-**Jaccard Similarity:** Measures the similarity between two sets by dividing the size of the intersection by the size of the union of the sets.
+(TOBIAS) **Jaccard Similarity:** Measures the similarity between two sets by dividing the size of the intersection by the size of the union of the sets.
     For example, you can treat the texts as sets of words and calculate the ratio of common words to total unique words.
     
-**Word Mover’s Distance (WMD):** This method calculates the minimum distance words need to travel to match the words in another document. This method is good for paraphrasing detection because it accounts for semantic similarity.
+(JOAO) **Word Mover’s Distance (WMD):** This method calculates the minimum distance words need to travel to match the words in another document. This method is good for paraphrasing detection because it accounts for semantic similarity.
 
 ## Advanced Semantic Comparison:
 
