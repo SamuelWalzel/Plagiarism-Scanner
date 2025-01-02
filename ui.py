@@ -18,7 +18,7 @@ class Frame:
     def __init__(self, root, frame_instance: int):
         self.root = root
         self.instance = frame_instance
-        Frame.token_count[self.instance] = 0
+        Frame.token_count[self.instance] = None
         border_label = f'File {str(self.instance)}'
         self.frame = tk.LabelFrame(self.root, text= border_label, relief="groove", borderwidth=2)
         self.filepath = None
@@ -69,8 +69,8 @@ class GUI:
     def root_config(self):
         self.root.title('ROOT WINDOW')
         self.root.geometry('800x500')
-        self.root.grid_columnconfigure(0, weight=1)
-        self.root.grid_columnconfigure(1, weight=1)
+        self.root.grid_columnconfigure(0, weight=1, uniform='equal')
+        self.root.grid_columnconfigure(1, weight=1, uniform='equal')
         self.root.rowconfigure(0, weight=0)
         self.root.rowconfigure(1, weight=0)
         self.root.rowconfigure(2, weight=0)
@@ -103,9 +103,6 @@ class GUI:
         except KeyError:
             print('texts missing')
      
-    def results(self):
-        pass
-            
 def main():
     gui = GUI()
     gui.root.mainloop()
