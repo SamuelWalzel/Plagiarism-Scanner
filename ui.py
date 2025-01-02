@@ -8,19 +8,23 @@ Description: Provides the user interface for the plagiarism scanner project.
 import tkinter as tk
 from tkinter import filedialog
 import difflib as dl
-
+import text_processing as tp
+ 
 class Frame:
     
     stored_texts = {}
+    token_count = {}
     
     def __init__(self, root, frame_instance: int):
         self.root = root
         self.instance = frame_instance
+        Frame.token_count[self.instance] = 0
         border_label = f'File {str(self.instance)}'
         self.frame = tk.LabelFrame(self.root, text= border_label, relief="groove", borderwidth=2)
         self.filepath = None
         self.buttons()
         self.show_path()
+        self.show_token_count()
         
     def buttons(self):
         self.button = tk.Button(self.frame, text='Choose file', command=self.open_file)
@@ -29,22 +33,26 @@ class Frame:
     def open_file(self):
         self.filepath = filedialog.askopenfilename(filetypes=[("text files", "*.txt")])
         print(self.filepath)
-        self.update_path()
+        self.path.set(f'Filepath: {self.filepath}')
         with open(self.filepath) as file:
             Frame.update_dict(self, file.read())
 
     def show_path(self):
-        self.lbl = tk.StringVar(value=f'Filepath: {self.filepath}')
-        self.path_label = tk.Label(self.frame, textvariable=self.lbl, anchor='w')
+        self.path = tk.StringVar(value=f'Filepath: {self.filepath}')
+        self.path_label = tk.Label(self.frame, textvariable=self.path, anchor='w')
         self.path_label.pack(pady=5, padx=5, fill='x')
         
-    def update_path(self):
-        self.lbl.set(f'Filepath: {self.filepath}')
+    def show_token_count(self):
+        self.count = tk.StringVar(value=f'Tokens: {str(Frame.token_count[self.instance]) }')
+        self.count_label = tk.Label(self.frame, textvariable=self.count, anchor='w')
+        self.count_label.pack(pady=5, padx=5, fill='x')
 
     @classmethod
     def update_dict(cls, self, text):
-        Frame.stored_texts[self.instance] = text
-        print(Frame.stored_texts)
+        Frame.stored_texts[self.instance] = tp.process(text)
+        Frame.token_count[self.instance] = len(Frame.stored_texts[self.instance])
+        self.count.set(f'Tokens: {str(Frame.token_count[self.instance])}')
+        print(f'Result: {Frame.stored_texts[self.instance]}')
     
 class GUI:
     
@@ -87,15 +95,13 @@ class GUI:
         lbl.pack(pady=5, padx=5)
         
     def compare_files(self):
-        if Frame.stored_texts[1] is not None and Frame.stored_texts[2] is not None:
+        try:
             text1 = Frame.stored_texts[1]
             text2 = Frame.stored_texts[2]
             sim = int(dl.SequenceMatcher(None, text1, text2).ratio()*100)
-            print(str(sim))
             self.sim_print.set(f'Similarity: {str(sim)} %')
-            print(self.sim_print)
-        else:
-            print('need 2 texts to compare')
+        except KeyError:
+            print('texts missing')
      
     def results(self):
         pass
