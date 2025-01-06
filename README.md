@@ -48,5 +48,3 @@ This project is a **Plagiarism Scanner** for any text-based file. It allows user
    - **Select First File**: Choose the first file you want to check for similarity.
    - **Select Second File**: Choose the second file for comparison.
    - **Check Similarity**: Click this button to calculate and display the similarity percentage between the two files.
-
-3. The similarity result will be displayed as a percentage in a popup dialog.
