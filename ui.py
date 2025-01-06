@@ -1,8 +1,9 @@
 '''
 Title: UI for the Final Project in Introduction to Python for the Winter Semester 2024/2025 in the FHOOE
 Authors: Joao Varejao, Samuel Walzel, Tobias Czerwenka
-Version: 02.01.2025
+Version: 06.01.2025
 Description: Provides the user interface for the plagiarism scanner project.
+
 '''
 
 import tkinter as tk
@@ -14,17 +15,6 @@ import word_movers_distance as wmd
 class Frame:
     """
     A GUI frame class for processing and displaying information about a text file.
-
-    Class Variables:
-        stored_raw_texts (dict): 
-            A dictionary storing raw text for each frame instance.
-            Key: frame instance (int), Value: raw text (str).
-        stored_tokens (dict): 
-            A dictionary storing processed text for each frame instance. 
-            Key: frame instance (int), Value: processed text (list of tokens).
-        token_count (dict): 
-            A dictionary storing the token count for the processed text of each frame instance. 
-            Key: frame instance (int), Value: token count (int).
 
     Instance Variables:
         root: 
@@ -45,6 +35,8 @@ class Frame:
             Label widget for showing the token count.
         button (tk.Button): 
             Button widget for file selection.
+        text (tp.Text):
+            A Text instance for processing the file content.
 
     Methods:
         __init__(self, root, frame_instance):
@@ -62,13 +54,7 @@ class Frame:
         show_token_count(self):
             Creates and packs a label for displaying the token count.
 
-        update_dict(cls, self, text):
-            Class method to process text, store the processed tokens, and update the token count.
     """
-
-    stored_raw_texts = {}
-    stored_tokens = {}
-    token_count = {}
 
     def __init__(self, root, frame_instance: int):
         """
@@ -79,8 +65,8 @@ class Frame:
             frame_instance (int): Identifier for the frame instance.
         """
         self.root = root
+        self.text = tp.Text('')
         self.instance = frame_instance
-        Frame.token_count[self.instance] = None
         border_label = f'File {str(self.instance)}'
         self.frame = tk.LabelFrame(self.root, text=border_label, relief="groove", borderwidth=2)
         self.filepath = None
@@ -98,16 +84,27 @@ class Frame:
     def open_file(self):
         """
         Opens a file dialog for selecting a text file. Updates the file path display and processes the file content.
+        
+       Raises:
+            FileNotFoundError: If the selected file is not found.
+            
         """
-        self.filepath = filedialog.askopenfilename(filetypes=[("text files", "*.txt")])
-        print(self.filepath)
-        self.path.set(f'Filepath: {self.filepath}')
-        with open(self.filepath) as file:
-            Frame.update_dict(self, file.read())
+        try:
+            self.filepath = filedialog.askopenfilename(filetypes=[("text files", "*.txt")])
+            if not self.filepath:
+                print('No file selected')
+                return
+            with open(self.filepath) as file:
+                self.text = tp.Text(file.read())
+                self.count.set(f'Tokens: {str(self.text.token_count)}')
+                self.path.set(f'Filepath: {self.filepath}')
+        except FileNotFoundError:
+            print('File not found')
 
     def show_path(self):
         """
         Creates a label to display the file path and adds it to the frame.
+        
         """
         self.path = tk.StringVar(value=f'Filepath: {self.filepath}')
         self.path_label = tk.Label(self.frame, textvariable=self.path, anchor='w')
@@ -117,23 +114,9 @@ class Frame:
         """
         Creates a label to display the token count and adds it to the frame.
         """
-        self.count = tk.StringVar(value=f'Tokens: {str(Frame.token_count[self.instance])}')
+        self.count = tk.StringVar(value=f'Tokens: {str(self.text.token_count)}')
         self.count_label = tk.Label(self.frame, textvariable=self.count, anchor='w')
         self.count_label.pack(pady=5, padx=5, fill='x')
-
-    @classmethod
-    def update_dict(cls, self, text):
-        """
-        Processes the text, stores the tokens in the class variable, and updates the token count.
-
-        Args:
-            text (str): The text content to be processed.
-        """
-        Frame.stored_raw_texts[self.instance] = text
-        Frame.stored_tokens[self.instance] = tp.process(text)
-        Frame.token_count[self.instance] = len(Frame.stored_tokens[self.instance])
-        self.count.set(f'Tokens: {str(Frame.token_count[self.instance])}')
-        print(f'Result: {Frame.stored_tokens[self.instance]}')
     
 class GUI:
     """
@@ -244,15 +227,15 @@ class GUI:
 
         """
         try:
-            text1 = Frame.stored_raw_texts[1]
-            text2 = Frame.stored_raw_texts[2]
-            tokens1 = Frame.stored_tokens[1]
-            tokens2 = Frame.stored_tokens[2]
+            text1 = self.frame_1.text.text
+            text2 = self.frame_2.text.text
+            tokens1 = self.frame_1.text.tokens
+            tokens2 = self.frame_2.text.tokens
             word_likeness = round(dl.SequenceMatcher(None, tokens1, tokens2).ratio()*100, 2)
             print(f'word likeness: {word_likeness} %')
-            token_closeness = wmd.check_similarity(' '.join(tokens1), ' '.join(tokens2))
+            token_closeness = wmd.spacy_similarity(' '.join(tokens1), ' '.join(tokens2))
             print(f'token closeness: {token_closeness} %')
-            raw_text_closeness = wmd.check_similarity(text1, text2)
+            raw_text_closeness = wmd.spacy_similarity(text1, text2)
             print(f'raw text closeness: {raw_text_closeness} %')
             average_score = round((word_likeness + token_closeness + raw_text_closeness)/3, 2)
             self.sim_print.set(f'Similarity: {str(average_score)} %')
