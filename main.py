@@ -13,6 +13,7 @@ import difflib
 import os
 import tkinter as tk
 from tkinter import filedialog, messagebox
+from jaccard_similarity import calculate_jaccard_similarity
 
 def calculate_similarity(file1_path: str, file2_path: str) -> float:
     """
