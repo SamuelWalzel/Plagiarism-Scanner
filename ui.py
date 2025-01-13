@@ -11,6 +11,7 @@ from tkinter import filedialog
 import difflib as dl
 import text_processing as tp
 import word_movers_distance as wmd
+from jaccard_similarity import calculate_jaccard_similarity
  
 class Frame:
     """
@@ -237,7 +238,10 @@ class GUI:
             print(f'token closeness: {token_closeness} %')
             raw_text_closeness = wmd.spacy_similarity(text1, text2)
             print(f'raw text closeness: {raw_text_closeness} %')
-            average_score = round((word_likeness + token_closeness + raw_text_closeness)/3, 2)
+            jaccard_similarity = calculate_jaccard_similarity(text1, text2)
+            print(f'Jaccard similarity: {jaccard_similarity} %')
+         
+            average_score = round((word_likeness + token_closeness + raw_text_closeness + jaccard_similarity)/4, 2)
             self.sim_print.set(f'Similarity: {str(average_score)} %')
         except KeyError:
             print('texts missing')
