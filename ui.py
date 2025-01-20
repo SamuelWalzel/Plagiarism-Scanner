@@ -240,8 +240,8 @@ class GUI:
             print(f'token closeness: {token_closeness} %')
             raw_text_closeness = wmd.spacy_similarity(text1, text2)
             print(f'raw text closeness: {raw_text_closeness} %')
-            jaccard_similarity = calculate_jaccard_similarity(text1, text2)
-            print(f'Jaccard similarity: {jaccard_similarity} %')
+            jaccard_similarity = calculate_jaccard_similarity(tokens1, tokens2)
+            print(f'Jaccard Similarity: {jaccard_similarity} %')
             cosine_similarity = calc_cosine_sim(tokens1, tokens2)
             print(f'Cosine Similarity: {cosine_similarity} %')
          
