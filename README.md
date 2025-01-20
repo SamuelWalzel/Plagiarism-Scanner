@@ -42,7 +42,7 @@ This project is a **Plagiarism Scanner** for any text-based file. It allows user
 1. Run the main script to start the plagiarism scanner:
 
     ```bash
-    python main.py
+    python ui.py
     ```
 
 2. Use the GUI to:
