@@ -37,8 +37,6 @@ This project is a **Plagiarism Scanner** for any text-based file. It allows user
     python -m spacy download en_core_web_md
     ```
 
-    > Note: `requirements.txt` is not currently needed, but if you add external libraries, this file will be helpful.
-
 ## Usage
 
 1. Run the main script to start the plagiarism scanner:
