@@ -28,10 +28,13 @@ This project is a **Plagiarism Scanner** for any text-based file. It allows user
     cd Plagiarism-Scanner
     ```
 
-3. Install any required dependencies (optional for future extensions, as `tkinter` and `difflib` are part of Python's standard library):
+3. Install any required dependencies:
 
     ```bash
     pip install -r requirements.txt
+    ```
+    ```bash
+    python -m spacy download en_core_web_md
     ```
 
     > Note: `requirements.txt` is not currently needed, but if you add external libraries, this file will be helpful.
