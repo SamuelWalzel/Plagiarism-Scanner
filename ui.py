@@ -242,8 +242,10 @@ class GUI:
             print(f'raw text closeness: {raw_text_closeness} %')
             jaccard_similarity = calculate_jaccard_similarity(text1, text2)
             print(f'Jaccard similarity: {jaccard_similarity} %')
+            cosine_similarity = calc_cosine_sim(tokens1, tokens2)
+            print(f'Cosine Similarity: {cosine_similarity} %')
          
-            average_score = round((word_likeness + token_closeness + raw_text_closeness + jaccard_similarity)/4, 2)
+            average_score = round((word_likeness + token_closeness + raw_text_closeness + jaccard_similarity + cosine_similarity)/5, 2)
             self.sim_print.set(f'Similarity: {str(average_score)} %')
         except KeyError:
             print('texts missing')
