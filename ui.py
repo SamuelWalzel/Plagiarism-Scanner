@@ -12,6 +12,8 @@ import difflib as dl
 import text_processing as tp
 import word_movers_distance as wmd
 from jaccard_similarity import calculate_jaccard_similarity
+from cosine_similarity import calc_cosine_sim
+
  
 class Frame:
     """
