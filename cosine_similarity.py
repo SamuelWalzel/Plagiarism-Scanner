@@ -2,8 +2,8 @@
 Provides a function to calculate cosine similarity between tokenized texts.
 """
 
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+import math
+from collections import Counter
 
 
 def calc_cosine_sim(tokens1: list, tokens2: list) -> float:
@@ -23,10 +23,23 @@ def calc_cosine_sim(tokens1: list, tokens2: list) -> float:
     if not tokens1 or not tokens2:
         raise ValueError("Token lists must not be empty.")
 
-    vectr = CountVectorizer()
-    processed = [" ".join(tokens1), " ".join(tokens2)]
-    vectors = vectr.fit_transform(processed).toarray()
+    freq1 = Counter(tokens1)
+    freq2 = Counter(tokens2)
 
-    # Calculate cosine similarity and extract the similarity value from the result matrix
-    sim = cosine_similarity([vectors[0]], [vectors[1]])[0][0]
-    return round(sim * 100, 2)
+    unique_words = set(freq1.keys()).union(set(freq2.keys()))
+
+    vec1 = [freq1.get(word, 0) for word in unique_words]
+    vec2 = [freq2.get(word, 0) for word in unique_words]
+
+    # Calculate dot product
+    dot_product = sum(v1 * v2 for v1, v2 in zip(vec1, vec2))
+
+    # Calculate magnitude of the vectors
+    magnitude1 = math.sqrt(sum(v ** 2 for v in vec1))
+    magnitude2 = math.sqrt(sum(v ** 2 for v in vec2))
+
+    if magnitude1 == 0 or magnitude2 == 0:
+        return 0.0
+
+    similarity = dot_product / (magnitude1 * magnitude2)
+    return round(similarity * 100, 2)
