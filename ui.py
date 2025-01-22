@@ -195,7 +195,7 @@ class GUI:
         self.label1 = tk.Label(self.root, text='Compare two files')
         self.label1.grid(columnspan=2, row=0, pady=10, padx=10)
      
-             try:
+        try:
             logo_image = Image.open("plagiarism_logo2.jpg")
             logo_image = logo_image.resize((120, 120))
             self.logo = ImageTk.PhotoImage(logo_image)
