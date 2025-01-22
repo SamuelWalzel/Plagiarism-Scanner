@@ -204,7 +204,7 @@ class GUI:
             logo_label.grid(column=1, row=0, sticky='ne', padx=10, pady=10)
 
         except FileNotFoundError:
-            print("Logo-Datei 'plagiarism_logo.jpg' nicht gefunden. Bitte überprüfe den Pfad.")
+            print("Logo 'plagiarism_logo2.jpg' not found.")
 
     def set_frames(self):
         """
