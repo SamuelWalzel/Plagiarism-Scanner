@@ -13,8 +13,8 @@ import text_processing as tp
 import word_movers_distance as wmd
 from jaccard_similarity import calculate_jaccard_similarity
 from cosine_similarity import calc_cosine_sim
+from PIL import Image, ImageTk
 
- 
 class Frame:
     """
     A GUI frame class for processing and displaying information about a text file.
@@ -194,6 +194,17 @@ class GUI:
         """
         self.label1 = tk.Label(self.root, text='Compare two files')
         self.label1.grid(columnspan=2, row=0, pady=10, padx=10)
+     
+             try:
+            logo_image = Image.open("plagiarism_logo2.jpg")
+            logo_image = logo_image.resize((120, 120))
+            self.logo = ImageTk.PhotoImage(logo_image)
+
+            logo_label = tk.Label(self.root, image=self.logo)
+            logo_label.grid(column=1, row=0, sticky='ne', padx=10, pady=10)
+
+        except FileNotFoundError:
+            print("Logo-Datei 'plagiarism_logo.jpg' nicht gefunden. Bitte überprüfe den Pfad.")
 
     def set_frames(self):
         """
