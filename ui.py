@@ -170,9 +170,6 @@ class GUI:
         Initializes the GUI class instance, setting up the root window, frames, and labels.
         """
         self.root = tk.Tk()
-        self.heading1 = ('Arial', 20)
-        self.heading2 = ('Arial', 16)
-        self.body = ('Arial', 12)
         self.root_config()
         self.first_labels()
         self.set_frames()
@@ -194,7 +191,7 @@ class GUI:
         """
         Creates and displays the main title label at the top of the GUI.
         """
-        self.label1 = tk.Label(self.root, text='Compare two files', font=self.body)
+        self.label1 = tk.Label(self.root, text='Compare two files')
         self.label1.grid(columnspan=2, row=0, pady=10, padx=10)
 
     def set_frames(self):
