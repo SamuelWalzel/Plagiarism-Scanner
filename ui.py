@@ -97,10 +97,11 @@ class Frame:
             if not self.filepath:
                 print('No file selected')
                 return
-            with open(self.filepath) as file:
-                self.text = tp.Text(file.read())
-                self.count.set(f'Tokens: {str(self.text.token_count)}')
-                self.path.set(f'Filepath: {self.filepath}')
+            else:
+                with open(self.filepath) as file:
+                    self.text = tp.Text(file.read())
+                    self.count.set(f'Tokens: {str(self.text.token_count)}')
+                    self.path.set(f'Filepath: {self.filepath}')
         except FileNotFoundError:
             print('File not found')
 
@@ -226,7 +227,7 @@ class GUI:
             KeyError: If one or both texts are missing in `Frame.stored_tokens`.
 
         """
-        try:
+        if self.frame_1.text.text != '' and self.frame_2.text.text != '':
             text1 = self.frame_1.text.text
             text2 = self.frame_2.text.text
             tokens1 = self.frame_1.text.tokens
@@ -244,7 +245,7 @@ class GUI:
          
             average_score = round((word_likeness + (token_closeness + raw_text_closeness)/2 + (jaccard_similarity + cosine_similarity)/2)/3, 2)
             self.sim_print.set(f'Similarity: {str(average_score)} %')
-        except KeyError:
+        else:
             print('texts missing')
      
 def main():
