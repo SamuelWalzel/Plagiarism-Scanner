@@ -15,6 +15,7 @@ from jaccard_similarity import calculate_jaccard_similarity
 from cosine_similarity import calc_cosine_sim
 from PIL import Image, ImageTk
 
+
 class Frame:
     """
     A GUI frame class for processing and displaying information about a text file.
@@ -71,7 +72,8 @@ class Frame:
         self.text = tp.Text('')
         self.instance = frame_instance
         border_label = f'File {str(self.instance)}'
-        self.frame = tk.LabelFrame(self.root, text=border_label, relief="groove", borderwidth=2)
+        self.frame = tk.LabelFrame(
+            self.root, text=border_label, relief="groove", borderwidth=2)
         self.filepath = None
         self.buttons()
         self.show_path()
@@ -81,19 +83,21 @@ class Frame:
         """
         Creates a 'Choose file' button in the frame to allow the user to select a text file.
         """
-        self.button = tk.Button(self.frame, text='Choose file', command=self.open_file)
+        self.button = tk.Button(
+            self.frame, text='Choose file', command=self.open_file)
         self.button.pack(pady=5, padx=5)
 
     def open_file(self):
         """
         Opens a file dialog for selecting a text file. Updates the file path display and processes the file content.
-        
+
        Raises:
             FileNotFoundError: If the selected file is not found.
-            
+
         """
         try:
-            self.filepath = filedialog.askopenfilename(filetypes=[("text files", "*.txt")])
+            self.filepath = filedialog.askopenfilename(
+                filetypes=[("text files", "*.txt")])
             if not self.filepath:
                 print('No file selected')
                 return
@@ -108,20 +112,24 @@ class Frame:
     def show_path(self):
         """
         Creates a label to display the file path and adds it to the frame.
-        
+
         """
         self.path = tk.StringVar(value=f'Filepath: {self.filepath}')
-        self.path_label = tk.Label(self.frame, textvariable=self.path, anchor='w')
+        self.path_label = tk.Label(
+            self.frame, textvariable=self.path, anchor='w')
         self.path_label.pack(pady=5, padx=5, fill='x')
 
     def show_token_count(self):
         """
         Creates a label to display the token count and adds it to the frame.
         """
-        self.count = tk.StringVar(value=f'Tokens: {str(self.text.token_count)}')
-        self.count_label = tk.Label(self.frame, textvariable=self.count, anchor='w')
+        self.count = tk.StringVar(
+            value=f'Tokens: {str(self.text.token_count)}')
+        self.count_label = tk.Label(
+            self.frame, textvariable=self.count, anchor='w')
         self.count_label.pack(pady=5, padx=5, fill='x')
-    
+
+
 class GUI:
     """
     A graphical user interface (GUI) application for comparing two text files and calculating their similarity.
@@ -180,8 +188,8 @@ class GUI:
         """
         Configures the root window by setting the title, size, and grid layout for uniform column widths.
         """
-        self.root.title('ROOT WINDOW')
-        self.root.geometry('800x500')
+        self.root.title('Plagiarism Scanner')
+        self.root.geometry('600x400')
         self.root.grid_columnconfigure(0, weight=1, uniform='equal')
         self.root.grid_columnconfigure(1, weight=1, uniform='equal')
         self.root.rowconfigure(0, weight=0)
@@ -192,16 +200,17 @@ class GUI:
         """
         Creates and displays the main title label at the top of the GUI.
         """
-        self.label1 = tk.Label(self.root, text='Compare two files')
+        self.label1 = tk.Label(
+            self.root, text='Compare two files', font=('Ariel', 16))
         self.label1.grid(columnspan=2, row=0, pady=10, padx=10)
-     
+
         try:
             logo_image = Image.open("plagiarism_logo2.jpg")
-            logo_image = logo_image.resize((120, 120))
+            logo_image = logo_image.resize((100, 100))
             self.logo = ImageTk.PhotoImage(logo_image)
 
             logo_label = tk.Label(self.root, image=self.logo)
-            logo_label.grid(column=1, row=0, sticky='ne', padx=10, pady=10)
+            logo_label.grid(column=0, row=0, sticky='nw', padx=10, pady=10)
 
         except FileNotFoundError:
             print("Logo 'plagiarism_logo2.jpg' not found.")
@@ -219,9 +228,12 @@ class GUI:
         """
         Creates a frame for displaying the comparison results and sets up the button and label within it.
         """
-        self.result_frame = tk.LabelFrame(self.root, text='Results', labelanchor='n', relief="groove", borderwidth=2)
-        self.result_frame.grid(columnspan=2, row=2, pady=10, padx=10, sticky="ew")
-        self.button = tk.Button(self.result_frame, text='Show results', command=self.compare_files)
+        self.result_frame = tk.LabelFrame(
+            self.root, text='Results', labelanchor='n', relief="groove", borderwidth=2)
+        self.result_frame.grid(columnspan=2, row=2,
+                               pady=10, padx=10, sticky="ew")
+        self.button = tk.Button(
+            self.result_frame, text='Show results', command=self.compare_files)
         self.button.pack(pady=5, padx=5)
         self.sim_print = tk.StringVar(value=f'Similarity: ...')
         lbl = tk.Label(self.result_frame, textvariable=self.sim_print)
@@ -230,7 +242,7 @@ class GUI:
     def compare_files(self):
         """
         Compares the processed text from the two frames using the SequenceMatcher from the difflib module.
-        
+
         This method calculates the similarity percentage between the texts stored in `frame_1` and `frame_2`, 
         and displays the result in the `result_frame`.
 
@@ -243,9 +255,11 @@ class GUI:
             text2 = self.frame_2.text.text
             tokens1 = self.frame_1.text.tokens
             tokens2 = self.frame_2.text.tokens
-            word_likeness = round(dl.SequenceMatcher(None, tokens1, tokens2).ratio()*100, 2)
+            word_likeness = round(dl.SequenceMatcher(
+                None, tokens1, tokens2).ratio()*100, 2)
             print(f'word likeness: {word_likeness} %')
-            token_closeness = wmd.spacy_similarity(' '.join(tokens1), ' '.join(tokens2))
+            token_closeness = wmd.spacy_similarity(
+                ' '.join(tokens1), ' '.join(tokens2))
             print(f'token closeness: {token_closeness} %')
             raw_text_closeness = wmd.spacy_similarity(text1, text2)
             print(f'raw text closeness: {raw_text_closeness} %')
@@ -253,16 +267,18 @@ class GUI:
             print(f'Jaccard Similarity: {jaccard_similarity} %')
             cosine_similarity = calc_cosine_sim(tokens1, tokens2)
             print(f'Cosine Similarity: {cosine_similarity} %')
-         
-            average_score = round(((word_likeness + jaccard_similarity)/2 + cosine_similarity + token_closeness + raw_text_closeness)/4, 2)
+
+            average_score = round(((word_likeness + jaccard_similarity)/2 +
+                                  cosine_similarity + token_closeness + raw_text_closeness)/4, 2)
             self.sim_print.set(f'Similarity: {str(average_score)} %')
         else:
             print('texts missing')
-     
+
+
 def main():
     gui = GUI()
     gui.root.mainloop()
-        
+
+
 if __name__ == '__main__':
     main()
-    
