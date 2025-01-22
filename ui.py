@@ -243,7 +243,7 @@ class GUI:
             cosine_similarity = calc_cosine_sim(tokens1, tokens2)
             print(f'Cosine Similarity: {cosine_similarity} %')
          
-            average_score = round((word_likeness + (token_closeness + raw_text_closeness)/2 + (jaccard_similarity + cosine_similarity)/2)/3, 2)
+            average_score = round(((word_likeness + jaccard_similarity)/2 + cosine_similarity + token_closeness + raw_text_closeness)/4, 2)
             self.sim_print.set(f'Similarity: {str(average_score)} %')
         else:
             print('texts missing')
